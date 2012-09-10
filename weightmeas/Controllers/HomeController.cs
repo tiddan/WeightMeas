@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Routing;
 using weightmeas.Models;
@@ -20,6 +21,29 @@ namespace weightmeas.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult MyChart(string username)
+        {
+            var dates = new List<DateTime>();
+            var weights = new List<double>();
+
+            foreach(var plot in _context.Users.Find(username).WeightPlots.OrderByDescending(x=>x.PlotStamp))
+            {
+                dates.Add(plot.PlotStamp);
+                weights.Add(plot.Weight);
+            }
+
+            var chart = new Chart(width: 400, height: 200);
+            chart.AddSeries
+                (
+                chartType: "line",
+                xValue: dates,
+                yValues: weights
+               );
+            chart.Write("png");
+
+            return null;
         }
 
         public ActionResult Register()
@@ -59,8 +83,9 @@ namespace weightmeas.Controllers
         public ActionResult Home(string username)
         {
             // Check if user is logged in.
-            var cookie = this.ControllerContext.HttpContext.Response.Cookies.Get("Username");
-            return cookie.Value == String.Empty ? Index() : View();
+            var user = _context.Users.Find(username);
+            
+            return View(user);
         }
 
         public ActionResult RegisterWeight(string privateToken)
