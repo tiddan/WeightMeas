@@ -13,11 +13,11 @@ namespace weightmeas.Controllers
     {
         private Context _context = new Context();
 
-        public HomeController()
-        {
-            _context.Database.CreateIfNotExists();
-        }
-
+        /// <summary>
+        /// Index - View
+        /// Display welcome page to the web site.
+        /// </summary>
+        /// <returns>Returns 'Index' page.</returns>
         public ActionResult Index()
         {
             return View();
@@ -66,18 +66,27 @@ namespace weightmeas.Controllers
             return RedirectToAction("Home", "Home", new { @username = newUser.Username });
         }
 
-        [HttpPost]
-        public ActionResult LoginExecute(string username, string cleartextpassword)
+        public ActionResult LoginExecute(User loggedInUser)
         {
-            var cookie = new HttpCookie("Username") {Value = username};
-            this.ControllerContext.HttpContext.Response.Cookies.Add(cookie);
-            return Home(username);
+            var privateToken = _context.Users.Find(loggedInUser.Username).PrivateToken;
+            
+            var validUsers = _context.Users.Count(x => x.Username == loggedInUser.Username && x.Password == loggedInUser.Password);
+
+            if (validUsers == 1)
+            {
+                Session.Add("PrivateToken", privateToken);
+                return RedirectToAction("Home", new {@username = loggedInUser.Username});
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         public ActionResult LogoutExecute()
         {
-            this.ControllerContext.HttpContext.Response.Cookies.Remove("Username");
-            return Index();
+            Session.Remove("PrivateToken");
+            return RedirectToAction("Index");
         }
 
         public ActionResult Home(string username)

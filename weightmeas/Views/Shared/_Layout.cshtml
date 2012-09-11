@@ -9,8 +9,18 @@
     <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/modernizr-1.7.min.js")" type="text/javascript"></script>
 </head>
+    <body>
+        <div id="Menu">
+            <p>Links</p>
+        </div>
+    
+        <div id="UserPanel">
+            @{ Html.RenderPartial("_UserPanel", new weightmeas.Models.User()); }
+        </div>
 
-<body>
-    @RenderBody()
-</body>
+        <div id="Main">
+            @RenderBody()
+        </div>
+
+    </body>
 </html>
