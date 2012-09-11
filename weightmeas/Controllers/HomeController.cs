@@ -34,7 +34,7 @@ namespace weightmeas.Controllers
                 weights.Add(plot.Weight);
             }
 
-            var chart = new Chart(width: 400, height: 200);
+            var chart = new Chart(width: 560, height: 200);
             chart.AddSeries
                 (
                 chartType: "line",
@@ -89,18 +89,34 @@ namespace weightmeas.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Home(string username)
+        public ActionResult Home(string privateToken)
         {
-            // Check if user is logged in.
-            var user = _context.Users.Find(username);
-            
+            if (String.IsNullOrEmpty(privateToken))
+            {
+                // Try finding the token accessing the Session.
+                var token = Session["PrivateToken"];
+                if (token == null) RedirectToAction("Index");
+
+                privateToken = (string) token;
+            }
+            var user = _context.Users.First(x => x.PrivateToken == privateToken);
+
             return View(user);
         }
 
         public ActionResult RegisterWeight(string privateToken)
         {
-            var token = new WeightPlot {PrivateToken = privateToken};
-            return View(token);
+            if (String.IsNullOrEmpty(privateToken))
+            {
+                // Try finding the token accessing the Session.
+                var token = Session["PrivateToken"];
+                if (token == null) RedirectToAction("Index");
+
+                privateToken = (string)token;
+            }
+
+            var plot = new WeightPlot {PrivateToken = privateToken};
+            return View(plot);
         }
 
         public ActionResult RegisterWeightExecute(WeightPlot newPlot)
@@ -113,7 +129,7 @@ namespace weightmeas.Controllers
 
             user.WeightPlots.Add(newPlot);
             _context.SaveChanges();
-            return Content("Weight saved");
+            return RedirectToAction("Home", new {@privateToken=newPlot.PrivateToken});
         }
 
     }

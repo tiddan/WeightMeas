@@ -3,7 +3,7 @@ body
     font-size: .85em;
     font-family: "Trebuchet MS", Verdana, Helvetica, Sans-Serif;
     color: #232323;
-    background-color: #fff;
+	background: #444466;
 }
 
 header,
@@ -44,7 +44,6 @@ textarea
     margin:0.5em 0 0 0;
 }
 
-
 /* Styles for validation helpers
 -----------------------------------------------------------*/
 .field-validation-error
@@ -72,4 +71,62 @@ textarea
 .validation-summary-valid
 {
     display: none;
+}
+
+#UserPanel {
+	position: absolute;
+	left: 450px;
+	top: 50px;
+	height: 80px;
+	width: 200px;
+	background: #8888AA;
+	border-bottom: black 2px solid;
+}
+
+#Menu {
+	position: absolute;
+	left: 50px;
+	top: 50px;
+	height: 80px;
+	width: 400px;
+	background: #8888AA;
+	border-bottom: black 2px solid;
+}
+
+#Main {
+	position: absolute;
+	padding: 20px;
+	left: 50px;
+	top: 130px;
+	width: 560px;
+	background: #EEEEFF;
+}
+
+/* Main Link meny styles
+-----------------------------------------------------------*/
+
+/* Top navigation link definition */
+#Menu a
+{
+	float: left;
+	color: #000000;
+	text-decoration: none;
+	margin: 10px;
+	padding: 10px;
+	border: black 2px solid;
+	width: 80px;
+	height: 40px;
+	background: #FFFFFF;
+	text-align: center;
+	vertical-align: central;
+}
+#Menu a:hover
+{
+	color: #FF0000;
+	text-decoration: underline;
+}
+#Menu a:visited 
+{
+	color: #000000;	
+	text-decoration: none;
 }

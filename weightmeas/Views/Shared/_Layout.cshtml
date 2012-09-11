@@ -11,7 +11,15 @@
 </head>
     <body>
         <div id="Menu">
-            <p>Links</p>
+            @{
+                var token = @Session["PrivateToken"];
+                if(token != null)
+                {
+                    @Html.ActionLink("Home", "Home", "Home")
+                    @Html.ActionLink("Register Weight", "RegisterWeight", "Home")
+                }
+            }
+
         </div>
     
         <div id="UserPanel">
