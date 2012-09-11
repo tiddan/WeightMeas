@@ -89,33 +89,46 @@ namespace weightmeas.Controllers
             return RedirectToAction("Index");
         }
 
+        private User LoginUsingToken(string privateToken)
+        {
+            if(Session["PrivateToken"]!=null)
+            {
+                privateToken = (string) Session["PrivateToken"];
+                var user = _context.Users.First(x => x.PrivateToken == privateToken);
+                return user;
+            }
+
+            if (privateToken == null || privateToken == String.Empty)
+            {
+                return null;
+            }
+
+            var validUsers = _context.Users.Count(x => x.PrivateToken == privateToken);
+
+            if(validUsers==1)
+            {
+                var user = _context.Users.First(x => x.PrivateToken == privateToken);
+                Session.Add("PrivateToken",user.PrivateToken);
+                return user;
+            }
+
+            return null;
+        }
+
         public ActionResult Home(string privateToken)
         {
-            if (String.IsNullOrEmpty(privateToken))
-            {
-                // Try finding the token accessing the Session.
-                var token = Session["PrivateToken"];
-                if (token == null) RedirectToAction("Index");
-
-                privateToken = (string) token;
-            }
-            var user = _context.Users.First(x => x.PrivateToken == privateToken);
+            var user = LoginUsingToken(privateToken);
+            if (user == null) RedirectToAction("Index");
 
             return View(user);
         }
 
         public ActionResult RegisterWeight(string privateToken)
         {
-            if (String.IsNullOrEmpty(privateToken))
-            {
-                // Try finding the token accessing the Session.
-                var token = Session["PrivateToken"];
-                if (token == null) RedirectToAction("Index");
+            var user = LoginUsingToken(privateToken);
+            if (user == null) RedirectToAction("Index");
 
-                privateToken = (string)token;
-            }
-
-            var plot = new WeightPlot {PrivateToken = privateToken};
+            var plot = new WeightPlot {PrivateToken = user.PrivateToken};
             return View(plot);
         }
 
