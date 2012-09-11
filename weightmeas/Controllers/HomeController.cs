@@ -62,8 +62,10 @@ namespace weightmeas.Controllers
             _context.Users.Add(newUser);
             _context.SaveChanges();
 
+            LoginUsingToken(newUser.PrivateToken);
+
             // Redirect to Home screen.
-            return RedirectToAction("Home", "Home", new { @username = newUser.Username });
+            return RedirectToAction("Home", "Home");
         }
 
         public ActionResult LoginExecute(User loggedInUser)
