@@ -77,29 +77,35 @@ textarea
 	position: absolute;
 	left: 450px;
 	top: 50px;
-	height: 80px;
-	width: 200px;
+	height: 100px;
+	width: 180px;
+	padding: 10px;
 	background: #8888AA;
 	border-bottom: black 2px solid;
+	border-top-right-radius: 20px;
 }
 
 #Menu {
 	position: absolute;
 	left: 50px;
 	top: 50px;
-	height: 80px;
-	width: 400px;
+	height: 100px;
+	width: 380px;
+	padding: 10px;
 	background: #8888AA;
 	border-bottom: black 2px solid;
+	border-top-left-radius: 20px;
 }
 
 #Main {
 	position: absolute;
 	padding: 20px;
 	left: 50px;
-	top: 130px;
+	top: 150px;
 	width: 560px;
 	background: #EEEEFF;
+	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 20px;
 }
 
 /* Main Link meny styles
