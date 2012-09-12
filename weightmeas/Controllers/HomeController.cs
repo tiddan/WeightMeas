@@ -27,8 +27,15 @@ namespace weightmeas.Controllers
         {
             var dates = new List<DateTime>();
             var weights = new List<double>();
+            var plots = _context.Users.Find(username).WeightPlots.OrderByDescending(x => x.PlotStamp);
 
-            foreach(var plot in _context.Users.Find(username).WeightPlots.OrderByDescending(x=>x.PlotStamp))
+            var minWeight = plots.Min(x => x.Weight);
+            var maxWeight = plots.Max(x => x.Weight);
+
+            minWeight -= 5;
+            maxWeight += 5;
+            
+            foreach(var plot in plots)
             {
                 dates.Add(plot.PlotStamp);
                 weights.Add(plot.Weight);
@@ -41,7 +48,9 @@ namespace weightmeas.Controllers
                 xValue: dates,
                 yValues: weights
                );
+            chart.SetYAxis("Kg", minWeight, maxWeight);
             chart.Write("png");
+            
 
             return null;
         }
