@@ -19,19 +19,19 @@
         <tr>
             <td>First weightin</td>
             <td>@firstPlot.PlotStamp.ToShortDateString()</td>
-            <td>@firstPlot.Weight</td>
+            <td>@String.Format("{0:0.00} kg", firstPlot.Weight)</td>
         </tr>
         <tr>
             <td>Last weightin</td>
             <td>@lastPlot.PlotStamp.ToShortDateString()</td>
-            <td>@lastPlot.Weight</td>
+            <td>@String.Format("{0:0.00} kg",lastPlot.Weight)</td>
         </tr>
         <tr>
             <td colspan="2">Weight loss</td>
             @{
                 var weightLoss = lastPlot.Weight - firstPlot.Weight;
             }
-            <td>@weightLoss</td>
+            <td>@String.Format("{0:0.00} kg",weightLoss)</td>
         </tr>
     </table>
 </div>
