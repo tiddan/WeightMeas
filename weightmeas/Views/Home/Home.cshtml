@@ -2,8 +2,41 @@
 
 @{
     ViewBag.Title = "Home";
+
+    var firstPlot = Model.WeightPlots.OrderBy(x => x.PlotStamp).First();
+    var lastPlot = Model.WeightPlots.OrderByDescending(x => x.PlotStamp).First();
+    
 }
 
 <h2>Home</h2>
+
+<p>This is your Home page. </p>
+
+<h3>Info</h3>
+
+<div id="InfoPanel">
+    <table>
+        <tr>
+            <td>First weightin</td>
+            <td>@firstPlot.PlotStamp.ToShortDateString()</td>
+            <td>@firstPlot.Weight</td>
+        </tr>
+        <tr>
+            <td>Last weightin</td>
+            <td>@lastPlot.PlotStamp.ToShortDateString()</td>
+            <td>@lastPlot.Weight</td>
+        </tr>
+        <tr>
+            <td colspan="2">Weight loss</td>
+            @{
+                var weightLoss = lastPlot.Weight - firstPlot.Weight;
+            }
+            <td>@weightLoss</td>
+        </tr>
+    </table>
+</div>
+
+<br/>
+
 
 <img src="@Url.Action("MyChart",new {@username=Model.Username })" alt="SimpleChart" />

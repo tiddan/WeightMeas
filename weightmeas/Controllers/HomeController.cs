@@ -41,7 +41,7 @@ namespace weightmeas.Controllers
                 weights.Add(plot.Weight);
             }
 
-            var chart = new Chart(width: 560, height: 200);
+            var chart = new Chart(width: 540, height: 200);
             chart.AddSeries
                 (
                 chartType: "line",

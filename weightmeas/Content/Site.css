@@ -129,3 +129,24 @@ textarea
 	color: #000000;	
 	text-decoration: none;
 }
+
+#InfoPanel table 
+{
+    border: black 1px solid;
+    padding: 10px;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    background: white; 
+}
+
+#InfoPanel td {
+    padding-right: 30px;
+}
+
+img {
+    border: black 1px solid;
+    padding: 10px;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    background: white;
+}
