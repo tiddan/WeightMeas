@@ -32,8 +32,8 @@ namespace weightmeas.Controllers
             var minWeight = plots.Min(x => x.Weight);
             var maxWeight = plots.Max(x => x.Weight);
 
-            minWeight -= 5;
-            maxWeight += 5;
+            minWeight -= 2;
+            maxWeight += 2;
             
             foreach(var plot in plots)
             {
@@ -41,7 +41,7 @@ namespace weightmeas.Controllers
                 weights.Add(plot.Weight);
             }
 
-            var chart = new Chart(width: 540, height: 200);
+            var chart = new Chart(width: 540, height: 280);
             chart.AddSeries
                 (
                 chartType: "line",
