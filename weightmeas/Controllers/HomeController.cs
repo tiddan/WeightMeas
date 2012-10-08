@@ -9,12 +9,20 @@ using weightmeas.Models;
 
 namespace weightmeas.Controllers
 {
+    /// <summary>
+    /// Home controller.
+    /// </summary>
     public class HomeController : Controller
     {
-        private Context _context = new Context();
+        /// <summary>
+        /// The database context.
+        /// </summary>
+        protected Context _context = new Context();
+
+        #region Render views
 
         /// <summary>
-        /// Index - View
+        /// Render 'Index' View
         /// Display welcome page to the web site.
         /// </summary>
         /// <returns>Returns 'Index' page.</returns>
@@ -23,6 +31,125 @@ namespace weightmeas.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Render 'Home' View
+        /// </summary>
+        /// <param name="privateToken">The private token.</param>
+        /// <returns></returns>
+        public ActionResult Home(string privateToken)
+        {
+            var user = LoginUsingToken(privateToken);
+            if (user == null) RedirectToAction("Index");
+
+            return View(user);
+        }
+
+        /// <summary>
+        /// Render 'Register' View
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Render 'RegisterWeight' View.
+        /// </summary>
+        /// <param name="privateToken">The private token.</param>
+        /// <returns></returns>
+        public ActionResult RegisterWeight(string privateToken)
+        {
+            var user = LoginUsingToken(privateToken);
+            if (user == null) RedirectToAction("Index");
+
+            var plot = new WeightPlot { PrivateToken = user.PrivateToken };
+            return View(plot);
+        }
+
+        #endregion
+
+        #region Form actions
+
+        /// <summary>
+        /// Register new user.
+        /// </summary>
+        /// <param name="newUser">The new user to register.</param>
+        /// <returns></returns>
+        public ActionResult RegisterExecute(User newUser)
+        {
+            // Create the private token.
+            newUser.PrivateToken = TokenFactory.GenerateToken();
+
+            // TODO: Maybe we need to check if the private key exist already.
+
+            // Execute register.
+            _context.Users.Add(newUser);
+            _context.SaveChanges();
+
+            LoginUsingToken(newUser.PrivateToken);
+
+            // Redirect to Home screen.
+            return RedirectToAction("Home", "Home");
+        }
+
+        /// <summary>
+        /// Login a user.
+        /// </summary>
+        /// <param name="loggedInUser">The user to log in.</param>
+        /// <returns></returns>
+        public ActionResult LoginExecute(User loggedInUser)
+        {
+            var privateToken = _context.Users.Find(loggedInUser.Username).PrivateToken;
+
+            var validUsers = _context.Users.Count(x => x.Username == loggedInUser.Username && x.Password == loggedInUser.Password);
+
+            if (validUsers == 1)
+            {
+                Session.Add("PrivateToken", privateToken);
+                return RedirectToAction("Home", new { @username = loggedInUser.Username });
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        /// <summary>
+        /// Log out user.
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult LogoutExecute()
+        {
+            Session.Remove("PrivateToken");
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Execute register weight action.
+        /// </summary>
+        /// <param name="newPlot">The plot to add.</param>
+        /// <returns></returns>
+        public ActionResult RegisterWeightExecute(WeightPlot newPlot)
+        {
+            newPlot.PlotStamp = DateTime.Now;
+            newPlot.PlotId = Guid.NewGuid();
+
+            var user = _context.Users.First(x => x.PrivateToken == newPlot.PrivateToken);
+            if (user == null) return Content("Lol");
+
+            user.WeightPlots.Add(newPlot);
+            _context.SaveChanges();
+            return RedirectToAction("Home", new { @privateToken = newPlot.PrivateToken });
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Render weight graph.
+        /// </summary>
+        /// <param name="username">The username to display graph for.</param>
+        /// <returns></returns>
         public ActionResult MyChart(string username)
         {
             var dates = new List<DateTime>();
@@ -55,51 +182,11 @@ namespace weightmeas.Controllers
             return null;
         }
 
-        public ActionResult Register()
-        {
-            return View();
-        }
-
-        public ActionResult RegisterExecute(User newUser)
-        {
-            // Create the private token.
-            newUser.PrivateToken = TokenFactory.GenerateToken();
-
-            // TODO: Maybe we need to check if the private key exist already.
-
-            // Execute register.
-            _context.Users.Add(newUser);
-            _context.SaveChanges();
-
-            LoginUsingToken(newUser.PrivateToken);
-
-            // Redirect to Home screen.
-            return RedirectToAction("Home", "Home");
-        }
-
-        public ActionResult LoginExecute(User loggedInUser)
-        {
-            var privateToken = _context.Users.Find(loggedInUser.Username).PrivateToken;
-            
-            var validUsers = _context.Users.Count(x => x.Username == loggedInUser.Username && x.Password == loggedInUser.Password);
-
-            if (validUsers == 1)
-            {
-                Session.Add("PrivateToken", privateToken);
-                return RedirectToAction("Home", new {@username = loggedInUser.Username});
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        public ActionResult LogoutExecute()
-        {
-            Session.Remove("PrivateToken");
-            return RedirectToAction("Index");
-        }
-
+        /// <summary>
+        /// Login using the private token.
+        /// </summary>
+        /// <param name="privateToken">The private token.</param>
+        /// <returns></returns>
         private User LoginUsingToken(string privateToken)
         {
             if(Session["PrivateToken"]!=null)
@@ -126,35 +213,9 @@ namespace weightmeas.Controllers
             return null;
         }
 
-        public ActionResult Home(string privateToken)
-        {
-            var user = LoginUsingToken(privateToken);
-            if (user == null) RedirectToAction("Index");
+        
 
-            return View(user);
-        }
-
-        public ActionResult RegisterWeight(string privateToken)
-        {
-            var user = LoginUsingToken(privateToken);
-            if (user == null) RedirectToAction("Index");
-
-            var plot = new WeightPlot {PrivateToken = user.PrivateToken};
-            return View(plot);
-        }
-
-        public ActionResult RegisterWeightExecute(WeightPlot newPlot)
-        {
-            newPlot.PlotStamp = DateTime.Now;
-            newPlot.PlotId = Guid.NewGuid();
-            
-            var user = _context.Users.First(x => x.PrivateToken == newPlot.PrivateToken);
-            if (user == null) return Content("Lol");
-
-            user.WeightPlots.Add(newPlot);
-            _context.SaveChanges();
-            return RedirectToAction("Home", new {@privateToken=newPlot.PrivateToken});
-        }
+        
 
     }
 }
