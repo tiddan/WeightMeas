@@ -213,9 +213,71 @@ namespace weightmeas.Controllers
             return null;
         }
 
-        
+        public ActionResult SetupDemoUser()
+        {
+            var rand = new Random((int)DateTime.Now.Ticks);
 
-        
+            var demoUser = new User
+                               {
+                                   Password = "demo",
+                                   Username = "demo@demo.com",
+                                   PrivateToken = TokenFactory.GenerateToken(),
+                                  
+                               };
+
+            // First remove user.
+            if (_context.Users.Count(x => x.Username == "demo@demo.com")==1)
+            {
+                var user = _context.Users.Find(demoUser.Username);
+                var weightPlots = new WeightPlot[user.WeightPlots.Count];
+                user.WeightPlots.CopyTo(weightPlots,0);
+
+                foreach(var plot in weightPlots)
+                {
+                    _context.WeightPlots.Remove(plot);
+                }
+                _context.Users.Remove(user);
+            }
+            _context.SaveChanges();
+
+            // Add user again.
+            _context.Users.Add(demoUser);
+            _context.SaveChanges();
+
+            // Get the user back again.
+            demoUser = _context.Users.Find(demoUser.Username);
+
+            // Add plots.
+            var date = DateTime.Parse("2011-01-01");
+            var weight = 110.0;
+            double weightLossPerDay = 0.20;
+            const double weightLossPerDayDecay = 0.995;
+            for(var i=0;i<365;i++)
+            {
+                var plot = new WeightPlot
+                {
+                    Weight = weight + (rand.NextDouble()*2),
+                    PlotId = Guid.NewGuid(),
+                    PlotStamp = date
+                };
+                
+                // Loose weight
+                weight = weight - weightLossPerDay + rand.NextDouble()/rand.Next(5,50);
+                weightLossPerDay *= weightLossPerDayDecay;
+                
+                // Append +1 days.
+                date = date.AddDays(1);
+
+                // Skip most of the days.
+                if (rand.Next(0, 100) > 25) continue;
+
+                demoUser.WeightPlots.Add(plot);
+            }
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
 
     }
 }

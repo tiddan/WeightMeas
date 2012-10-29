@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
@@ -10,6 +11,7 @@ namespace weightmeas.Models
     public class User
     {
         private string _password = "";
+        private Collection<WeightPlot> weightPlots;
 
         [Key]
         [Email]
@@ -27,7 +29,10 @@ namespace weightmeas.Models
         [Required]
         public string PrivateToken { get; set; }
 
-        public virtual ICollection<WeightPlot> WeightPlots { get; set; } 
+        public virtual ICollection<WeightPlot> WeightPlots
+        {
+            get { return weightPlots ?? (weightPlots = new Collection<WeightPlot>()); }
+        } 
 
         public static string HashPassword(string clearTextPassword)
         {
