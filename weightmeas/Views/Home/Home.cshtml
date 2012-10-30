@@ -1,42 +1,72 @@
-﻿@model weightmeas.Models.User
+﻿@using weightmeas.Models
+@model weightmeas.Models.User
 
 @{
     ViewBag.Title = "Home";
 
-    var firstPlot = Model.WeightPlots.OrderBy(x => x.PlotStamp).First();
-    var lastPlot = Model.WeightPlots.OrderByDescending(x => x.PlotStamp).First();
+    // Figure out if any plots are availiable.
+    var plotsAvailiable = Model.WeightPlots != null && Model.WeightPlots.Count>0;
+
+    WeightPlot firstPlot = null;
+    WeightPlot lastPlot = null;
     
+    if(plotsAvailiable)
+    {
+        firstPlot = Model.WeightPlots.OrderBy(x => x.PlotStamp).First();
+        lastPlot = Model.WeightPlots.OrderByDescending(x => x.PlotStamp).First();
+    }
 }
 
 <h2>Home</h2>
 
-<p>This is your Home page. </p>
+<p>
+    Welcome to your home page. Here you can see your weight graph and you can edit your plots. Please note that these
+    features are not availiable yet. They will become availiable at a later stage.
+</p>
 
-<h3>Info</h3>
+@if(plotsAvailiable)
+{
+    <div class="RoundedSection">
+        <h3>Link to quick registration</h3>
+        <p>
+            The link provided under this text enables you to log in to your account and register a weight plot
+            without having to enter your username and password.<br/><br/>
+           
+            I encourage you to copy this link and add it to your smart phone so that you can easily register your weight
+            whenever you weight in, without having to log in or use a application.<br/><br />
+        </p>
+        
+        @{
+            var uri = HttpContext.Current.Request.Url.AbsoluteUri;
+            var parms = HttpContext.Current.Request.Url.PathAndQuery;
+            var link = uri.Replace(parms, @"/Home/RegisterWeight?privateToken=" + Model.PrivateToken);
+        }
 
-<div id="InfoPanel">
-    <table>
-        <tr>
-            <td>First weightin</td>
-            <td>@firstPlot.PlotStamp.ToShortDateString()</td>
-            <td>@String.Format("{0:0.00} kg", firstPlot.Weight)</td>
-        </tr>
-        <tr>
-            <td>Last weightin</td>
-            <td>@lastPlot.PlotStamp.ToShortDateString()</td>
-            <td>@String.Format("{0:0.00} kg",lastPlot.Weight)</td>
-        </tr>
-        <tr>
-            <td colspan="2">Weight loss</td>
+        <div class="DottedLink" >@link</div>
+    </div>
+    <div class="RoundedSection">
+        <h3>Weight chart</h3>
+        <img src="@Url.Action("MyChart", new {@username = Model.Username})" alt="SimpleChart" />
+        <div class="DottedLink" style="text-align: left; padding: 20px;">
+            <h3>Summary</h3>
+            Date of first weight-in was <span class="UnderlinedStrong">@firstPlot.PlotStamp.ToShortDateString()</span> and I was
+            weighing <span class="UnderlinedStrong">@String.Format("{0:0.00} kg",firstPlot.Weight)</span> at that time.
+            My last weight-in was <span class="UnderlinedStrong">@lastPlot.PlotStamp.ToShortDateString()</span> and I was
+            weighing <span class="UnderlinedStrong">@String.Format("{0:0.00} kg",firstPlot.Weight)</span>.
+
             @{
                 var weightLoss = lastPlot.Weight - firstPlot.Weight;
             }
-            <td>@String.Format("{0:0.00} kg",weightLoss)</td>
-        </tr>
-    </table>
-</div>
+            
+            I've lost <span class="UnderlinedStrong">@String.Format("{0:0.00} kg", weightLoss)</span> so far!
 
-<br/>
-
-
-<img src="@Url.Action("MyChart",new {@username=Model.Username })" alt="SimpleChart" />
+        </div>
+    </div>
+}
+else
+{
+    <p>
+        No plots avaliable. The graph and the information will become availiable whenever you start
+        to register your weight :)
+    </p>
+}

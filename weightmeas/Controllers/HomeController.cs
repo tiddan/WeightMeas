@@ -81,6 +81,13 @@ namespace weightmeas.Controllers
             // Create the private token.
             newUser.PrivateToken = TokenFactory.GenerateToken();
 
+            // ===================================================================
+            // Check if user already exist. If already exist, then redirect
+            // to DisplayError action with errorCode 10001.
+            // ===================================================================
+            var user = _context.Users.Find(newUser.Username);
+            if (user != null) return RedirectToAction("DisplayError", "Error", new {@errorCode = 10001});
+
             // TODO: Maybe we need to check if the private key exist already.
 
             // Execute register.
@@ -165,19 +172,18 @@ namespace weightmeas.Controllers
             foreach(var plot in plots)
             {
                 dates.Add(plot.PlotStamp);
-                weights.Add(plot.Weight);
+                weights.Add(Math.Round(plot.Weight,2));
             }
 
-            var chart = new Chart(width: 540, height: 280);
+            var chart = new Chart(540,280);
             chart.AddSeries
                 (
                 chartType: "line",
                 xValue: dates,
                 yValues: weights
                );
-            chart.SetYAxis("Kg", minWeight, maxWeight);
+            chart.SetYAxis("", Math.Round(minWeight,1), Math.Round(maxWeight,1));
             chart.Write("png");
-            
 
             return null;
         }
@@ -218,12 +224,12 @@ namespace weightmeas.Controllers
             var rand = new Random((int)DateTime.Now.Ticks);
 
             var demoUser = new User
-                               {
-                                   Password = "demo",
-                                   Username = "demo@demo.com",
-                                   PrivateToken = TokenFactory.GenerateToken(),
+                {
+                    Password = "demo",
+                    Username = "demo@demo.com",
+                    PrivateToken = TokenFactory.GenerateToken(),
                                   
-                               };
+                };
 
             // First remove user.
             if (_context.Users.Count(x => x.Username == "demo@demo.com")==1)

@@ -1,7 +1,7 @@
 body
 {
-    font-size: .85em;
-    font-family: "Trebuchet MS", Verdana, Helvetica, Sans-Serif;
+    font-size: 12px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     color: #232323;
 	background: #444466;
 }
@@ -136,6 +136,29 @@ textarea
 	text-decoration: none;
 }
 
+.UnderlinedStrong {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.RoundedSection {
+    border: black 1px solid;
+    padding: 10px;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    background: white;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.DottedLink {
+    color: #404040;
+    border: 1px dotted gray;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 #InfoPanel table 
 {
     border: black 1px solid;
@@ -147,12 +170,4 @@ textarea
 
 #InfoPanel td {
     padding-right: 30px;
-}
-
-img {
-    border: black 1px solid;
-    padding: 10px;
-    border-radius: 15px;
-    -moz-border-radius: 15px;
-    background: white;
 }
