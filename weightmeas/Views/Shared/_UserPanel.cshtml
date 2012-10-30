@@ -39,7 +39,7 @@
         Model.Username = user.Username;
         Model.PrivateToken = user.PrivateToken;
         
-        using(@Html.BeginForm("LogoutExecute","Home"))
+        using(@Html.BeginForm("LogoutExecute","Home", FormMethod.Post))
         {
             <table>
                 <tr>
