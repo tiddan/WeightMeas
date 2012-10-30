@@ -40,6 +40,7 @@
             var uri = HttpContext.Current.Request.Url.AbsoluteUri;
             var parms = HttpContext.Current.Request.Url.PathAndQuery;
             var link = uri.Replace(parms, @"/Home/RegisterWeight?privateToken=" + Model.PrivateToken);
+            link = link.Replace(@"http://", "");
             
             if(link.Contains("apphb.com"))
             {
