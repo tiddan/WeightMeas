@@ -37,9 +37,16 @@
         </p>
         
         @{
-            var uri = HttpContext.Current.Request.Url.OriginalString;
+            var uri = HttpContext.Current.Request.Url.AbsoluteUri;
             var parms = HttpContext.Current.Request.Url.PathAndQuery;
             var link = uri.Replace(parms, @"/Home/RegisterWeight?privateToken=" + Model.PrivateToken);
+            
+            if(link.Contains("apphb.com"))
+            {
+                var port = HttpContext.Current.Request.Url.Port;
+                link = link.Replace(port.ToString(),"").Replace(":", "");
+            }
+            
         }
 
         <div class="DottedLink" >@link</div>
