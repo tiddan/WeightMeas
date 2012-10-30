@@ -37,7 +37,7 @@
         </p>
         
         @{
-            var uri = HttpContext.Current.Request.Url.AbsoluteUri;
+            var uri = HttpContext.Current.Request.Url.OriginalString;
             var parms = HttpContext.Current.Request.Url.PathAndQuery;
             var link = uri.Replace(parms, @"/Home/RegisterWeight?privateToken=" + Model.PrivateToken);
         }
