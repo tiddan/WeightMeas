@@ -61,7 +61,7 @@
             Date of first weight-in was <span class="UnderlinedStrong">@firstPlot.PlotStamp.ToShortDateString()</span> and I was
             weighing <span class="UnderlinedStrong">@String.Format("{0:0.00} kg",firstPlot.Weight)</span> at that time.
             My last weight-in was <span class="UnderlinedStrong">@lastPlot.PlotStamp.ToShortDateString()</span> and I was
-            weighing <span class="UnderlinedStrong">@String.Format("{0:0.00} kg",firstPlot.Weight)</span>.
+            weighing <span class="UnderlinedStrong">@String.Format("{0:0.00} kg",lastPlot.Weight)</span>.
 
             @{
                 var weightLoss = lastPlot.Weight - firstPlot.Weight;
