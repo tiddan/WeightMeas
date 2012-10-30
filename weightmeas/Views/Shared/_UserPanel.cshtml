@@ -14,7 +14,7 @@
     
     if(sessionData == null)
     {
-        using(@Html.BeginForm("LoginExecute","Home"))
+        using(@Html.BeginForm("LoginExecute","Home", FormMethod.Post))
         {
             <table>
                 <tr>
