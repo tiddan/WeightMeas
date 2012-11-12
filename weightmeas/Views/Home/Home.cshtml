@@ -19,40 +19,52 @@
 
 <h2>Home</h2>
 
+
+<!-- -------------------------------------------------------------
+    Display introduction.
+------------------------------------------------------------------ -->
 <p>
     Welcome to your home page. Here you can see your weight graph and you can edit your plots. Please note that these
     features are not availiable yet. They will become availiable at a later stage.
 </p>
 
+<!-- -------------------------------------------------------------
+    Display Panel that display the link to Quick Registration.
+------------------------------------------------------------------ -->
+<div class="RoundedSection">
+    <h3>Link to quick registration</h3>
+    <p>
+        The link provided under this text enables you to log in to your account and register a weight plot
+        without having to enter your username and password.<br/><br/>
+           
+        I encourage you to copy this link and add it to your smart phone so that you can easily register your weight
+        whenever you weight in, without having to log in or use a application.<br/><br />
+    </p>
+        
+    @{
+        var uri = HttpContext.Current.Request.Url.AbsoluteUri;
+        var parms = HttpContext.Current.Request.Url.PathAndQuery;
+        var link = uri.Replace(parms, @"/Home/RegisterWeight?privateToken=" + Model.PrivateToken);
+        link = link.Replace(@"http://", "");
+            
+        if(link.Contains("apphb.com"))
+        {
+            var port = HttpContext.Current.Request.Url.Port;
+            link = link.Replace(port.ToString(),"").Replace(":", "");
+        }
+            
+    }
+
+    <div class="DottedLink" >@link</div>
+</div>
+
+<!-- -------------------------------------------------------------
+    Display Graph and Status panel is plots are available.
+    If plots are not availiable, then display message saying that the
+    user should add some plots.
+------------------------------------------------------------------ -->
 @if(plotsAvailiable)
 {
-    <div class="RoundedSection">
-        <h3>Link to quick registration</h3>
-        <p>
-            The link provided under this text enables you to log in to your account and register a weight plot
-            without having to enter your username and password.<br/><br/>
-           
-            I encourage you to copy this link and add it to your smart phone so that you can easily register your weight
-            whenever you weight in, without having to log in or use a application.<br/><br />
-        </p>
-        
-        @{
-            var uri = HttpContext.Current.Request.Url.AbsoluteUri;
-            var parms = HttpContext.Current.Request.Url.PathAndQuery;
-            var link = uri.Replace(parms, @"/Home/RegisterWeight?privateToken=" + Model.PrivateToken);
-            link = link.Replace(@"http://", "");
-            
-            if(link.Contains("apphb.com"))
-            {
-                var port = HttpContext.Current.Request.Url.Port;
-                link = link.Replace(port.ToString(),"").Replace(":", "");
-            }
-            
-        }
-
-        <div class="DottedLink" >@link</div>
-    </div>
-    
     <div class="RoundedSection">
         <h3>Weight chart</h3>
         <img src="@Url.Action("MyChart", new {@username = Model.Username})" alt="SimpleChart" />
