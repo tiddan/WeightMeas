@@ -108,7 +108,9 @@
                         curveType: "function",
                         width: 500,
                         height: 400,
+                        legend: { position: 'none'},
                         pointSize: 2,
+                        chartArea: { left: "40", top: "20", width: "440", height: "340" },
                         @Html.Raw("vAxis: { maxValue: "+lowest.ToString().Replace(",",".")+", minValue: "+highest.ToString().Replace(",",".")+" }")
                     });
             }            
