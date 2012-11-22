@@ -71,6 +71,10 @@
 ------------------------------------------------------------------ -->
 @if(plotsAvailiable)
 {
+    var weightPlots = Model.WeightPlots.OrderBy(x => x.Weight).Select(x => x.Weight);
+    var lowest = weightPlots.First() - 5;
+    var highest = weightPlots.Last() + 5;
+    
     <div class="RoundedSection">
         <h3>Weight chart</h3>
         
@@ -105,7 +109,7 @@
                         width: 500,
                         height: 400,
                         pointSize: 2,
-                        vAxis: { maxValue: 120, minValue: 80 },
+                        @Html.Raw("vAxis: { maxValue: "+lowest.ToString().Replace(",",".")+", minValue: "+highest.ToString().Replace(",",".")+" }")
                     });
             }            
 
