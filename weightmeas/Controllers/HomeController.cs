@@ -181,7 +181,7 @@ namespace weightmeas.Controllers
                 chartType: "line",
                 xValue: dates,
                 yValues: weights
-               );
+                );
             chart.SetYAxis("", Math.Round(minWeight,1), Math.Round(maxWeight,1));
             chart.Write("png");
 
@@ -283,6 +283,11 @@ namespace weightmeas.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Demo()
+        {
+            return View();
         }
 
     }

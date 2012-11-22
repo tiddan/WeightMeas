@@ -17,6 +17,12 @@
     }
 }
 
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+
+<script type="text/javascript">
+    google.load('visualization', '1', {packages: ['corechart']});
+</script>
+
 <h2>Home</h2>
 
 
@@ -67,7 +73,48 @@
 {
     <div class="RoundedSection">
         <h3>Weight chart</h3>
-        <img src="@Url.Action("MyChart", new {@username = Model.Username})" alt="SimpleChart" />
+        
+        <!--
+        Create the graph using Google chart.
+        -->
+        
+        <script type="text/javascript">
+            function drawVisualization() {
+                // Create and populate the data table.
+
+                var data = new google.visualization.DataTable();
+                data.addColumn('date', 'Date');
+                data.addColumn('number', 'Weight');
+
+                data.addRows([
+                    @foreach(var plot in Model.WeightPlots.OrderBy(x=>x.PlotStamp))
+                    {
+                        @Html.Raw("[new Date(" + plot.PlotStamp.Year + "," + plot.PlotStamp.Month + "," + plot.PlotStamp.Day + ")," + plot.Weight.ToString().Replace(",", ".") + "]")
+
+                        if (plot.PlotId != Model.WeightPlots.OrderBy(x=>x.PlotStamp).Last().PlotId)
+                        {
+                            @Html.Raw(",")
+                        }
+                    }
+                ]);
+
+                // Create and draw the visualization.
+                new google.visualization.LineChart(document.getElementById('visualization')).
+                    draw(data, {
+                        curveType: "function",
+                        width: 500,
+                        height: 400,
+                        pointSize: 2,
+                        vAxis: { maxValue: 120, minValue: 80 },
+                    });
+            }            
+
+            google.setOnLoadCallback(drawVisualization);
+            
+        </script>
+
+        <div id="visualization" style="width: 500px; height: 400px;"></div>
+
         <div class="DottedLink" style="text-align: left; padding: 20px;">
             <h3>Summary</h3>
             Date of first weight-in was <span class="UnderlinedStrong">@firstPlot.PlotStamp.ToShortDateString()</span> and I was
