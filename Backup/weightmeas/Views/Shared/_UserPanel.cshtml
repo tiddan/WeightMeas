@@ -1,0 +1,58 @@
+﻿@using weightmeas.Models
+@model weightmeas.Models.User
+
+<style type="text/css">
+	input {
+		width: 100px;
+	    height: 18px;
+	    font-size: 10px;
+	}
+</style>
+
+@{
+    var sessionData = Session["PrivateToken"];
+    
+    if(sessionData == null)
+    {
+        using(@Html.BeginForm("LoginExecute","Home", FormMethod.Post))
+        {
+            <table>
+                <tr>
+                    <td>@Html.LabelFor(x => x.Username)</td>
+                    <td>@Html.EditorFor(x => x.Username)</td>
+                </tr>
+                <tr>
+                    <td>@Html.LabelFor(x => x.Password)</td>
+                    <td>@Html.EditorFor(x => x.Password)</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Login" /></td>
+                </tr>
+            </table>
+        }
+    }
+    else
+    {
+        var context = new weightmeas.Models.Context();
+        var user = context.Users.First(x => x.PrivateToken == (string)sessionData);
+        Model.Username = user.Username;
+        Model.PrivateToken = user.PrivateToken;
+        
+        using(@Html.BeginForm("LogoutExecute","Home", FormMethod.Post))
+        {
+            <table>
+                <tr>
+                    <td colspan="2">
+                        Current user:<br/>
+                        @Html.DisplayFor(x => x.Username)
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Logout" /></td>
+                </tr>
+            </table>
+        }
+    }
+}

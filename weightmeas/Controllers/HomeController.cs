@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Routing;
+using OpenQA.Selenium;
+using OpenQA.Selenium.PhantomJS;
 using weightmeas.Models;
 
 namespace weightmeas.Controllers
@@ -217,6 +219,20 @@ namespace weightmeas.Controllers
             }
 
             return null;
+        }
+
+        public ActionResult SuperTest()
+        {
+            IWebDriver driver = new PhantomJSDriver();
+            driver.Navigate().GoToUrl("http://www.google.com");
+            var i = driver.FindElement(By.Name("q"));
+            i.SendKeys("Lol");
+            i.Submit();
+            i = driver.FindElement(By.Name("q"));
+            var v = i.GetAttribute("value");
+            ViewBag.ResultValue = v;
+
+            return View();
         }
 
         public ActionResult SetupDemoUser()
