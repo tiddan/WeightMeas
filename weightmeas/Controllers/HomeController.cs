@@ -202,6 +202,9 @@ namespace weightmeas.Controllers
             {
                 privateToken = (string) Session["PrivateToken"];
                 var user = _context.Users.First(x => x.PrivateToken == privateToken);
+                var tmp = user.WeightPlots.ToList();
+                user.WeightPlots.Clear();
+                user.WeightPlots.AddRange(tmp.Where(x => x.PlotStamp > DateTime.Parse("2015-01-1")));
                 return user;
             }
 
