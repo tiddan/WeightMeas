@@ -11,14 +11,18 @@
 </head>
     <body>
         <div id="Menu">
-            @{
-                var token = @Session["PrivateToken"];
-                if(token != null)
+            
+                @{ var token = @Session["PrivateToken"]; }
+                
+                @if (token != null)
                 {
-                    @Html.ActionLink("Home", "Home", "Home")
-                    @Html.ActionLink("Register Weight", "RegisterWeight", "Home")
+                    @Html.ActionLink("Home", "Home", "Home");
+                   
+                    @Html.ActionLink("Register Weight", "RegisterWeight", "Home");
+                    
                 }
-            }
+            
+            
 
         </div>
     
