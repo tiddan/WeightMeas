@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Routing;
+using DotNetOpenAuth.Messaging;
 using OpenQA.Selenium;
 using OpenQA.Selenium.PhantomJS;
 using weightmeas.Models;
@@ -215,6 +216,9 @@ namespace weightmeas.Controllers
             {
                 var user = _context.Users.First(x => x.PrivateToken == privateToken);
                 Session.Add("PrivateToken",user.PrivateToken);
+                var tmp = user.WeightPlots.ToList();
+                user.WeightPlots.Clear();
+                user.WeightPlots.AddRange(tmp.Where(x=>x.PlotStamp>DateTime.Parse("2015-01-1")));
                 return user;
             }
 
