@@ -163,7 +163,7 @@ namespace weightmeas.Controllers
         {
             var dates = new List<DateTime>();
             var weights = new List<double>();
-            var plots = _context.Users.Find(username).WeightPlots.OrderByDescending(x => x.PlotStamp);
+            var plots = _context.Users.Find(username).WeightPlots.Where(x=>x.PlotStamp>DateTime.Parse("2015-01-01")).OrderByDescending(x => x.PlotStamp);
 
             var minWeight = plots.Min(x => x.Weight);
             var maxWeight = plots.Max(x => x.Weight);
